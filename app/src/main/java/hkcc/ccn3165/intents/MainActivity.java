@@ -1,6 +1,7 @@
 package hkcc.ccn3165.intents;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.Contacts;
 import android.provider.MediaStore;
@@ -27,11 +28,19 @@ public class MainActivity extends AppCompatActivity {
         Button buttonImage = (Button) findViewById(R.id.ButtonImage);
         Button buttonPeople = (Button) findViewById(R.id.ButtonPeople);
 
+        final boolean isPlayInstalled = appInstalledOrNot("com.android.vending");
+
         buttonMarket.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View view) {
-                Uri uri = Uri.parse("market://search?q=AR");
-                Intent it = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(it);
+                if (isPlayInstalled) {
+                    Uri uri = Uri.parse("market://search?q=AR");
+                    Intent it = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(it);
+                } else {
+                    Intent i = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store"));
+                    startActivity(i);
+                }
             }
         });
 
@@ -103,4 +112,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
+    // https://stackoverflow.com/questions/11392183/how-to-check-programmatically-if-an-application-is-installed-or-not-in-android
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
+    }
 }
