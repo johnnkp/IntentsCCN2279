@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         Button buttonPeople = (Button) findViewById(R.id.ButtonPeople);
 
         final boolean isPlayInstalled = appInstalledOrNot("com.android.vending");
+        final boolean isGMapInstalled = appInstalledOrNot("com.google.android.apps.maps");
+        final boolean isGoMapInstalled = appInstalledOrNot("com.google.android.apps.mapslite");
 
         buttonMarket.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View view) {
@@ -71,9 +73,15 @@ public class MainActivity extends AppCompatActivity {
         });
         buttonGMap.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View view) {
-                Uri uri = Uri.parse("geo:22.303342,114.184828");
-                Intent i = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(i);
+                if (isGMapInstalled || isGoMapInstalled) {
+                    Uri uri = Uri.parse("geo:22.303342,114.184828");
+                    Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://www.google.com.hk/maps/place/HKCC-HHB/@22.3033116,114.1847644,21z/data=!4m5!3m4!1s0x340400e6d07a9527:0xe93a262e9b73cd30!8m2!3d22.3032283!4d114.1848477?hl=zh-TW"));
+                    startActivity(i);
+                }
             }
         });
         buttonTel.setOnClickListener(new Button.OnClickListener() {
